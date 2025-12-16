@@ -7,8 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --primary: #1a5f7a;
-      --secondary: #57c5b6;
+      --primary: #4C6CB3;
+      --secondary: #66A6D9;
       --accent: #89d6e0;
       --dark: #002b5b;
       --light-bg: #ffffff;
@@ -502,6 +502,10 @@
 
     /* Print Styles */
     @media print {
+      @page {
+        size: A4;
+        margin: 5mm; /* ←←← Only change: added margin for PDF */
+      }
       body {
         background: none;
         padding: 0;
@@ -515,124 +519,167 @@
         margin: 0;
         width: 100%;
         padding: 0;
+        max-width: none;
       }
       .header {
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
         page-break-after: avoid;
-        padding: 20px 30px 18px;
+        padding: 25px 20px 20px;
         flex-direction: row !important;
         align-items: center !important;
         text-align: left !important;
       }
       .name {
-        font-size: 32px;
-        margin-bottom: 5px;
+        font-size: 38px;
+        margin-bottom: 8px;
+        letter-spacing: 1.2px;
       }
       .role {
-        font-size: 15px;
-        margin-bottom: 15px;
+        font-size: 18px;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
       }
       .contact-header {
-        font-size: 11px;
-        gap: 15px;
+        font-size: 13px;
+        gap: 20px;
       }
       .profile-photo {
-        width: 100px;
-        height: 100px;
-        border-width: 3px;
+        width: 110px;
+        height: 110px;
+        border-width: 4px;
       }
       .photo-placeholder {
-        width: 100px;
-        height: 100px;
-        font-size: 10px;
+        width: 110px;
+        height: 110px;
+        font-size: 11px;
       }
       .content {
-        padding: 20px 30px 25px;
+        padding: 25px 20px 30px;
       }
       .section {
-        margin-bottom: 18px;
+        margin-bottom: 22px;
         page-break-inside: avoid;
       }
       h2 {
-        font-size: 14px;
-        margin-bottom: 9px;
-        padding-bottom: 4px;
+        font-size: 16px;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+      }
+      h2::after {
+        width: 70px;
+        height: 4px;
       }
       .summary-text {
-        font-size: 11px;
-        padding: 10px;
-        line-height: 1.6;
+        font-size: 13px;
+        padding: 14px;
+        line-height: 1.7;
       }
       .job-entry {
-        margin-bottom: 13px;
-        padding-left: 16px;
+        margin-bottom: 18px;
+        padding-left: 20px;
+      }
+      .job-entry::before {
+        left: -7px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
       }
       .job-title {
-        font-size: 13px;
+        font-size: 15px;
       }
       .company-info {
-        font-size: 11px;
+        font-size: 13px;
       }
       .date-range {
-        font-size: 10px;
-        margin-bottom: 7px;
-      }
-      li {
-        font-size: 10px;
-        margin-bottom: 5px;
-        line-height: 1.4;
-      }
-      .education-entry {
-        padding: 10px;
+        font-size: 12px;
         margin-bottom: 10px;
       }
-      .degree {
+      li {
         font-size: 12px;
+        margin-bottom: 8px;
+        padding-left: 22px;
+        line-height: 1.6;
+      }
+      li::before {
+        font-size: 18px;
+        left: 10px;
+      }
+      .education-entry {
+        padding: 14px;
+        margin-bottom: 15px;
+      }
+      .degree {
+        font-size: 14px;
       }
       .institution, .education-desc {
-        font-size: 10px;
+        font-size: 12px;
+      }
+      .skills-grid {
+        gap: 15px;
       }
       .skill-category {
-        padding: 10px;
+        padding: 14px;
       }
       .skill-category-title {
-        font-size: 11px;
+        font-size: 13px;
+        margin-bottom: 10px;
       }
       .skill-category li {
-        font-size: 9px;
+        font-size: 11px;
+        margin-bottom: 7px;
+      }
+      .info-grid {
+        gap: 12px;
       }
       .info-item {
-        padding: 8px;
-        font-size: 10px;
+        padding: 12px;
+        font-size: 12px;
       }
       .info-label {
-        font-size: 8px;
+        font-size: 10px;
+        margin-bottom: 4px;
+      }
+      .pill-container {
+        gap: 10px;
       }
       .pill {
-        padding: 5px 12px;
-        font-size: 10px;
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+      .competencies-single {
+        gap: 10px;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
       }
       .comp-item {
-        padding: 6px 11px;
-        font-size: 10px;
+        padding: 10px 16px;
+        font-size: 12px;
       }
       .award-box {
-        padding: 10px;
-        font-size: 10px;
+        padding: 14px;
+        font-size: 12px;
       }
       .declaration {
-        margin-top: 18px;
-        padding: 12px;
+        margin-top: 25px;
+        padding: 16px;
       }
       .declaration-text {
-        font-size: 10px;
+        font-size: 12px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+      }
+      .signature-section {
+        margin-top: 25px;
       }
       .signature-place, .signature-date {
-        font-size: 9px;
+        font-size: 11px;
+        margin-bottom: 5px;
       }
       .signature-name {
-        font-size: 13px;
+        font-size: 15px;
+        padding-top: 8px;
+        margin-top: 15px;
       }
       .skill-category, .info-item, .pill, .award-box, .education-entry {
         print-color-adjust: exact;
@@ -648,25 +695,242 @@
       }
     }
 
-    @page {
-      size: A4;
-      margin: 10mm 10mm;
-    }
-
-    /* Responsive */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
+      body {
+        padding: 15px 10px;
+      }
+      
+      .toolbar {
+        max-width: 100%;
+        justify-content: center;
+      }
+      
+      .toolbar button {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+      
+      .page {
+        width: 100%;
+        max-width: 100%;
+      }
+      
       .header {
         flex-direction: column;
         text-align: center;
+        padding: 20px 20px 18px;
+        gap: 20px;
       }
-      .skills-grid {
-        grid-template-columns: 1fr;
+      
+      .header-content {
+        text-align: center;
       }
-      .info-grid {
-        grid-template-columns: repeat(2, 1fr);
+      
+      .name {
+        font-size: 28px;
+        margin-bottom: 4px;
       }
+      
+      .role {
+        font-size: 15px;
+        margin-bottom: 15px;
+        letter-spacing: 2px;
+      }
+      
       .contact-header {
         justify-content: center;
+        font-size: 11px;
+        gap: 12px;
+      }
+      
+      .profile-photo {
+        width: 90px;
+        height: 90px;
+      }
+      
+      .photo-placeholder {
+        width: 90px;
+        height: 90px;
+        font-size: 10px;
+      }
+      
+      .content {
+        padding: 20px 20px 25px;
+      }
+      
+      h2 {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      
+      h2::after {
+        width: 50px;
+        height: 2.5px;
+      }
+      
+      .summary-text {
+        font-size: 11px;
+        padding: 10px;
+      }
+      
+      .job-entry {
+        margin-bottom: 12px;
+        padding-left: 15px;
+      }
+      
+      .job-title {
+        font-size: 13px;
+      }
+      
+      .company-info {
+        font-size: 11px;
+      }
+      
+      .date-range {
+        font-size: 10px;
+        margin-bottom: 6px;
+      }
+      
+      li {
+        font-size: 10px;
+        margin-bottom: 5px;
+        padding-left: 18px;
+      }
+      
+      .education-entry {
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      
+      .degree {
+        font-size: 12px;
+      }
+      
+      .institution, .education-desc {
+        font-size: 10px;
+      }
+      
+      .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .skill-category {
+        padding: 10px;
+      }
+      
+      .skill-category-title {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+      
+      .skill-category li {
+        font-size: 9px;
+        margin-bottom: 4px;
+      }
+      
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      
+      .info-item {
+        padding: 8px;
+        font-size: 10px;
+      }
+      
+      .info-label {
+        font-size: 8px;
+        margin-bottom: 2px;
+      }
+      
+      .pill-container {
+        gap: 6px;
+      }
+      
+      .pill {
+        padding: 5px 12px;
+        font-size: 10px;
+      }
+      
+      .competencies-single {
+        gap: 6px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .comp-item {
+        padding: 6px 12px;
+        font-size: 10px;
+      }
+      
+      .award-box {
+        padding: 10px;
+        font-size: 10px;
+      }
+      
+      .declaration {
+        margin-top: 15px;
+        padding: 12px;
+      }
+      
+      .declaration-text {
+        font-size: 10px;
+        margin-bottom: 12px;
+      }
+      
+      .signature-section {
+        margin-top: 15px;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+      
+      .signature-place, .signature-date {
+        font-size: 9px;
+        margin-bottom: 2px;
+      }
+      
+      .signature-name {
+        font-size: 13px;
+        padding-top: 5px;
+        margin-top: 10px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header {
+        padding: 15px 15px 12px;
+        gap: 15px;
+      }
+      
+      .name {
+        font-size: 24px;
+      }
+      
+      .role {
+        font-size: 13px;
+      }
+      
+      .profile-photo {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .photo-placeholder {
+        width: 80px;
+        height: 80px;
+        font-size: 9px;
+      }
+      
+      .content {
+        padding: 15px 15px 20px;
+      }
+      
+      .contact-header {
+        flex-direction: column;
+        gap: 8px;
       }
     }
   </style>
@@ -999,4 +1263,3 @@
 
 </body>
 </html>
-
