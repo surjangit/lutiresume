@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anjana Bista – Cabin Crew</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #1a5f7a;
+      --secondary: #57c5b6;
+      --accent: #89d6e0;
+      --dark: #002b5b;
+      --light-bg: #ffffff;
+      --text: #1a1a1a;
+      --light-text: #4a4a4a;
+      --border: #e0e0e0;
+      --highlight: #f0f9ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: "Inter", Arial, sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+
+    .toolbar {
+      max-width: 210mm;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar button {
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toolbar button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .edit { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .save { background: linear-gradient(135deg, #57c5b6 0%, #89d6e0 100%); display: none; }
+    .undo { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); display: none; }
+    .pdf  { background: linear-gradient(135deg, #000000 0%, #434343 100%); }
+    .reset { background: linear-gradient(135deg, #c94b4b 0%, #4b134f 100%); }
+
+    .page {
+      width: 210mm;
+      margin: 0 auto;
+      background: var(--light-bg);
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    /* Header Section with Gradient */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 25px 35px 22px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -5%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+    }
+
+    .profile-photo-container {
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .profile-photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255,255,255,0.3);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.1);
+      display: none;
+    }
+
+    .profile-photo.show {
+      display: block;
+    }
+
+    .photo-placeholder {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px dashed rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      text-align: center;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .photo-placeholder.hide {
+      display: none;
+    }
+
+    .name {
+      font-family: "Playfair Display", serif;
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .role {
+      font-size: 17px;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.95;
+      margin-bottom: 18px;
+    }
+
+    .contact-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .contact-item::before {
+      content: '●';
+      color: var(--accent);
+    }
+
+    /* Main Content */
+    .content {
+      padding: 25px 35px 30px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+
+    h2 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      position: relative;
+      padding-bottom: 5px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--secondary), var(--accent));
+      border-radius: 2px;
+    }
+
+    .summary-text {
+      font-size: 12px;
+      color: var(--light-text);
+      line-height: 1.7;
+      text-align: justify;
+      background: var(--highlight);
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .job-entry {
+      margin-bottom: 15px;
+      padding-left: 18px;
+      border-left: 2px solid var(--border);
+      position: relative;
+    }
+
+    .job-entry::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 5px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .job-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 3px;
+    }
+
+    .company-info {
+      font-size: 12px;
+      color: var(--secondary);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .date-range {
+      font-size: 11px;
+      color: #888;
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    li {
+      font-size: 11px;
+      color: var(--light-text);
+      margin-bottom: 6px;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    li::before {
+      content: '▹';
+      position: absolute;
+      left: 8px;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .education-entry {
+      margin-bottom: 12px;
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--secondary);
+    }
+
+    .degree {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 3px;
+    }
+
+    .institution {
+      font-size: 11px;
+      color: var(--secondary);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .education-desc {
+      font-size: 11px;
+      color: var(--light-text);
+      line-height: 1.5;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .skill-category {
+      background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+      padding: 12px;
+      border-radius: 6px;
+      border-top: 2px solid var(--accent);
+    }
+
+    .skill-category-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .skill-category ul {
+      margin-top: 0;
+    }
+
+    .skill-category li {
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    /* Single Row Competencies */
+    .competencies-single {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .comp-item {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8eaf6 100%);
+      color: var(--dark);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+
+    .comp-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .info-item {
+      background: var(--highlight);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 3px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      color: var(--light-text);
+    }
+
+    /* Languages & Hobbies Pills */
+    .pill-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    /* Awards Box */
+    .award-box {
+      background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid #ff9800;
+      font-size: 11px;
+      color: var(--light-text);
+      line-height: 1.6;
+    }
+
+    /* Declaration */
+    .declaration {
+      margin-top: 20px;
+      padding: 14px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      page-break-inside: avoid;
+    }
+
+    .declaration-text {
+      font-size: 11px;
+      color: var(--light-text);
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .signature-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 20px;
+    }
+
+    .signature-line {
+      text-align: right;
+    }
+
+    .signature-place, .signature-date {
+      font-size: 10px;
+      color: #888;
+      margin-bottom: 3px;
+    }
+
+    .signature-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      font-family: "Playfair Display", serif;
+      border-top: 2px solid var(--dark);
+      padding-top: 6px;
+      margin-top: 12px;
+    }
+
+    /* Editable Style */
+    .editable[contenteditable="true"] {
+      outline: 2px dashed var(--accent);
+      background: #fffacd;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .editable[contenteditable="true"]:hover {
+      background: #fff9c4;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+        margin: 0;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        padding: 0;
+      }
+      .header {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        page-break-after: avoid;
+        padding: 20px 30px 18px;
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: left !important;
+      }
+      .name {
+        font-size: 32px;
+        margin-bottom: 5px;
+      }
+      .role {
+        font-size: 15px;
+        margin-bottom: 15px;
+      }
+      .contact-header {
+        font-size: 11px;
+        gap: 15px;
+      }
+      .profile-photo {
+        width: 100px;
+        height: 100px;
+        border-width: 3px;
+      }
+      .photo-placeholder {
+        width: 100px;
+        height: 100px;
+        font-size: 10px;
+      }
+      .content {
+        padding: 20px 30px 25px;
+      }
+      .section {
+        margin-bottom: 18px;
+        page-break-inside: avoid;
+      }
+      h2 {
+        font-size: 14px;
+        margin-bottom: 9px;
+        padding-bottom: 4px;
+      }
+      .summary-text {
+        font-size: 11px;
+        padding: 10px;
+        line-height: 1.6;
+      }
+      .job-entry {
+        margin-bottom: 13px;
+        padding-left: 16px;
+      }
+      .job-title {
+        font-size: 13px;
+      }
+      .company-info {
+        font-size: 11px;
+      }
+      .date-range {
+        font-size: 10px;
+        margin-bottom: 7px;
+      }
+      li {
+        font-size: 10px;
+        margin-bottom: 5px;
+        line-height: 1.4;
+      }
+      .education-entry {
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .degree {
+        font-size: 12px;
+      }
+      .institution, .education-desc {
+        font-size: 10px;
+      }
+      .skill-category {
+        padding: 10px;
+      }
+      .skill-category-title {
+        font-size: 11px;
+      }
+      .skill-category li {
+        font-size: 9px;
+      }
+      .info-item {
+        padding: 8px;
+        font-size: 10px;
+      }
+      .info-label {
+        font-size: 8px;
+      }
+      .pill {
+        padding: 5px 12px;
+        font-size: 10px;
+      }
+      .comp-item {
+        padding: 6px 11px;
+        font-size: 10px;
+      }
+      .award-box {
+        padding: 10px;
+        font-size: 10px;
+      }
+      .declaration {
+        margin-top: 18px;
+        padding: 12px;
+      }
+      .declaration-text {
+        font-size: 10px;
+      }
+      .signature-place, .signature-date {
+        font-size: 9px;
+      }
+      .signature-name {
+        font-size: 13px;
+      }
+      .skill-category, .info-item, .pill, .award-box, .education-entry {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      .profile-photo {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      h2::after {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+
+    @page {
+      size: A4;
+      margin: 10mm 10mm;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .contact-header {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="edit" onclick="enableEdit()">✏️ Edit</button>
+  <button class="save" onclick="saveEdit()">💾 Save</button>
+  <button class="undo" onclick="undoEdit()">↶ Undo</button>
+  <button class="reset" onclick="resetContent()">🔄 Reset</button>
+  <button class="pdf" onclick="window.print()">📄 Save as PDF</button>
+</div>
+
+<div class="page">
+  <!-- Header Section -->
+  <div class="header">
+    <div class="profile-photo-container editable" data-section="photo">
+      <img id="profilePhoto" class="profile-photo" src="" alt="Profile Photo" onerror="this.style.display='none'; document.getElementById('photoPlaceholder').style.display='flex';" onload="if(this.src) {this.style.display='block'; document.getElementById('photoPlaceholder').style.display='none';}">
+      <div id="photoPlaceholder" class="photo-placeholder">
+        Add Photo URL
+      </div>
+    </div>
+    <div class="header-content editable" data-section="header">
+      <div class="name">Anjana Bista</div>
+      <div class="role">Cabin Crew</div>
+      <div class="contact-header">
+        <div class="contact-item">+91 6009854659</div>
+        <div class="contact-item">anjanabista@gmail.com</div>
+        <div class="contact-item">Katwaria Sarai, South-Delhi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    
+    <!-- Professional Summary -->
+    <div class="section">
+      <h2>Professional Summary</h2>
+      <div class="summary-text editable" data-section="summary">
+        Dedicated and detail-oriented Cabin Crew Member with over 2+ years of experience delivering exceptional in-flight customer service and ensuring strict adherence to aviation safety protocols. Proven ability to remain calm under pressure, address passenger needs with empathy and professionalism, and contribute to a smooth and enjoyable flight experience. Committed to upholding airline standards and creating a welcoming atmosphere onboard.
+      </div>
+    </div>
+
+    <!-- Work Experience -->
+    <div class="section">
+      <h2>Work Experience</h2>
+      <div class="job-entry editable" data-section="experience">
+        <div class="job-title">Cabin Crew (International)</div>
+        <div class="company-info">Vistara Airlines (Now Air India)</div>
+        <div class="date-range">Feb 2023 – Till Date</div>
+        <ul>
+          <li>Deliver exceptional in-flight service to passengers on domestic and international routes, ensuring comfort, safety, and a positive travel experience.</li>
+          <li>Conduct pre-flight briefings, safety demonstrations, and cabin checks in compliance with DGCA and airline regulations.</li>
+          <li>Handle passenger queries and concerns with empathy and professionalism, including special assistance requests.</li>
+          <li>Collaborate with flight crew to manage emergencies and maintain calm during challenging situations.</li>
+          <li>Maintain grooming standards and represent the airline brand with professionalism and courtesy at all times.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Personal Information -->
+    <div class="section">
+      <h2>Personal Information</h2>
+      <div class="info-grid editable" data-section="personal">
+        <div class="info-item">
+          <span class="info-label">Nationality</span>
+          <span class="info-value">Indian</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Date of Birth</span>
+          <span class="info-value">15-08-2000</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gender</span>
+          <span class="info-value">Female</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Passport</span>
+          <span class="info-value">W2123577</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Height</span>
+          <span class="info-value">160 cm</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Weight</span>
+          <span class="info-value">49 kg</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <h2>Education</h2>
+      <div class="editable" data-section="education">
+        <div class="education-entry">
+          <div class="degree">Aviation Training Certification</div>
+          <div class="institution">Bradford Aviation Academy, Bangalore • 2022–2023</div>
+          <div class="education-desc">
+            Completed comprehensive training in in-flight safety procedures, customer service excellence, emergency response, grooming standards, and international aviation protocols. Developed strong communication and hospitality skills tailored for both domestic and international airline operations.
+          </div>
+        </div>
+        <div class="education-entry">
+          <div class="degree">Bachelor of Arts (English Literature)</div>
+          <div class="institution">Manipur University, Imphal • 2019–2022</div>
+          <div class="education-desc">
+            Completed a broad-based undergraduate program with a focus on English Literature. Developed strong analytical, communication, and interpersonal skills, which support effective passenger interaction and team collaboration in the aviation industry.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div class="section">
+      <h2>Languages</h2>
+      <div class="pill-container editable" data-section="languages">
+        <span class="pill">English</span>
+        <span class="pill">Hindi</span>
+        <span class="pill">Nepali</span>
+      </div>
+    </div>
+
+    <!-- Hobbies -->
+    <div class="section">
+      <h2>Interests & Hobbies</h2>
+      <div class="pill-container editable" data-section="hobbies">
+        <span class="pill">Traveling</span>
+        <span class="pill">Learning Languages</span>
+        <span class="pill">Creative Arts (Painting)</span>
+        <span class="pill">Fitness (Swimming)</span>
+      </div>
+    </div>
+
+    <!-- Core Competencies - Single Row -->
+    <div class="section">
+      <h2>Core Competencies</h2>
+      <div class="competencies-single editable" data-section="skills">
+        <span class="comp-item">Exceptional Customer Service</span>
+        <span class="comp-item">In-Flight Safety Protocols</span>
+        <span class="comp-item">Emergency Response</span>
+        <span class="comp-item">Cultural Sensitivity</span>
+        <span class="comp-item">Team Collaboration</span>
+        <span class="comp-item">Conflict Resolution</span>
+        <span class="comp-item">First Aid & CPR</span>
+        <span class="comp-item">Professional Grooming</span>
+        <span class="comp-item">Time Management</span>
+        <span class="comp-item">Clear Communication</span>
+      </div>
+    </div>
+
+    <!-- Declaration -->
+    <div class="declaration editable" data-section="declaration">
+      <div class="declaration-text">
+        I affirm that the information given above is true and complete. I am fully responsible for its authenticity and look forward to the opportunity to contribute my skills and experience.
+      </div>
+      <div class="signature-section">
+        <div></div>
+        <div class="signature-line">
+          <div class="signature-place">Katwaria Sarai, Delhi</div>
+          <div class="signature-date">11th May 2025</div>
+          <div class="signature-name">Anjana Bista</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Wait for DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    const editableElements = document.querySelectorAll('.editable');
+    let previousStates = new Map();
+    const STORAGE_PREFIX = 'resume_v2_';
+
+    // Load saved content on page load
+    editableElements.forEach((element) => {
+      const section = element.getAttribute('data-section');
+      const saved = localStorage.getItem(STORAGE_PREFIX + section);
+      if (saved) {
+        element.innerHTML = saved;
+      }
+    });
+
+    // Check if photo section has image URL
+    updatePhotoDisplay();
+
+    // Make functions global so onclick can access them
+    window.enableEdit = function() {
+      // Save current state before editing
+      editableElements.forEach((element) => {
+        const section = element.getAttribute('data-section');
+        previousStates.set(section, element.innerHTML);
+        element.setAttribute('contenteditable', 'true');
+      });
+      
+      document.querySelector('.save').style.display = 'inline-flex';
+      document.querySelector('.undo').style.display = 'inline-flex';
+      
+      // Visual feedback
+      showNotification('Edit mode enabled. Click on any section to edit. For photo, edit the img src attribute directly.', 'info');
+    };
+
+    window.saveEdit = function() {
+      editableElements.forEach((element) => {
+        const section = element.getAttribute('data-section');
+        element.removeAttribute('contenteditable');
+        localStorage.setItem(STORAGE_PREFIX + section, element.innerHTML);
+      });
+      
+      document.querySelector('.save').style.display = 'none';
+      document.querySelector('.undo').style.display = 'none';
+      previousStates.clear();
+      
+      // Update photo display after save
+      updatePhotoDisplay();
+      
+      showNotification('Changes saved successfully!', 'success');
+    };
+
+    window.undoEdit = function() {
+      editableElements.forEach((element) => {
+        const section = element.getAttribute('data-section');
+        const previousState = previousStates.get(section);
+        if (previousState) {
+          element.innerHTML = previousState;
+        }
+        element.removeAttribute('contenteditable');
+      });
+      
+      document.querySelector('.save').style.display = 'none';
+      document.querySelector('.undo').style.display = 'none';
+      previousStates.clear();
+      
+      // Update photo display after undo
+      updatePhotoDisplay();
+      
+      showNotification('Changes undone.', 'info');
+    };
+
+    window.resetContent = function() {
+      if (confirm('Are you sure you want to reset all content to original? This will delete all your saved changes.')) {
+        // Clear all localStorage items for this resume
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith(STORAGE_PREFIX)) {
+            localStorage.removeItem(key);
+          }
+        });
+        
+        // Reload the page to show original content
+        location.reload();
+      }
+    };
+
+    function updatePhotoDisplay() {
+      const photoContainer = document.querySelector('[data-section="photo"]');
+      if (photoContainer) {
+        const img = photoContainer.querySelector('#profilePhoto');
+        const placeholder = photoContainer.querySelector('#photoPlaceholder');
+        const imgSrc = img.getAttribute('src');
+        
+        if (imgSrc && imgSrc.trim() !== '') {
+          img.style.display = 'block';
+          placeholder.style.display = 'none';
+        } else {
+          img.style.display = 'none';
+          placeholder.style.display = 'flex';
+        }
+      }
+    }
+
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        background: ${type === 'success' ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' : 
+                       type === 'error' ? 'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)' :
+                       'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 1000;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  });
+</script>
+
+</body>
+</html>
+
